@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ats_optimizer_dev
+
+aws:
+  s3:
+    bucket-name: ats-optimizer-documents-dev

@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ats-postgres
+    environment:
+      POSTGRES_DB: ats_optimizer
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ats-network
+
+  document-processor:
+    build:
+      context: ./document-processor
+      dockerfile: Dockerfile
+    container_name: document-processor-service
+    ports:
+      - "8081:8081"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ats_optimizer
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET:-ats-optimizer-documents-local}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - ats-network
+
+volumes:
+  postgres_data:
+
+networks:
+  ats-network:
+    driver: bridge
