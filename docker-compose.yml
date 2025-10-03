@@ -81,6 +81,37 @@ services:
     networks:
       - ats-network
 
+  ai-orchestrator:
+    build:
+      context: ./ai-orchestrator
+      dockerfile: Dockerfile
+    container_name: ai-orchestrator-service
+    ports:
+      - "8083:8083"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ats_optimizer
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DOCUMENT_SERVICE_URL: http://document-processor:8081
+      JOB_SERVICE_URL: http://job-analyzer:8082
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-20250514}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      document-processor:
+        condition: service_started
+      job-analyzer:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - ats-network
+
 volumes:
   postgres_data:
 
