@@ -1,4 +1,4 @@
-package com.atsoptimizer.documentprocessor.service
+package com.atsoptimizer.documenatopprocessor.processor.service
 
 import io.mockk.junit5.MockKExtension
 import org.junit.jupiter.api.Test
