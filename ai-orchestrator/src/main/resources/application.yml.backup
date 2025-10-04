@@ -2,9 +2,9 @@ spring:
   application:
     name: ai-orchestrator-service
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/ats_optimizer}
-    username: ${DATABASE_USER:postgres}
-    password: ${DATABASE_PASSWORD:postgres}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ats_optimizer}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -16,7 +16,7 @@ spring:
         format_sql: true
 
 server:
-  port: ${PORT:8083}
+  port: 8083
 
 # Service URLs
 services:
@@ -50,4 +50,5 @@ agents:
 
 logging:
   level:
-    com.atsoptimizer: INFO
+    com.atsoptimizer: DEBUG
+    org.springframework.web: INFO
