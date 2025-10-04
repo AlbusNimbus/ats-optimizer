@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Document, Job, Analysis } from '../types';
+import { getUserId } from '../services/userService';
 
 interface AppState {
   userId: string;
@@ -20,25 +21,30 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => ({
-  userId: 'demo-user',
+  userId: getUserId(), // Generate unique ID per browser
   setUserId: (userId) => set({ userId }),
+  
   documents: [],
   setDocuments: (documents) => set({ documents }),
   addDocument: (document) => set((state) => ({ 
     documents: [...state.documents, document] 
   })),
+  
   jobs: [],
   setJobs: (jobs) => set({ jobs }),
   addJob: (job) => set((state) => ({ 
     jobs: [...state.jobs, job] 
   })),
+  
   analyses: [],
   setAnalyses: (analyses) => set({ analyses }),
   addAnalysis: (analysis) => set((state) => ({
     analyses: [...state.analyses, analysis]
   })),
+  
   selectedDocument: null,
   setSelectedDocument: (document) => set({ selectedDocument: document }),
+  
   selectedJob: null,
   setSelectedJob: (job) => set({ selectedJob: job }),
 }));
